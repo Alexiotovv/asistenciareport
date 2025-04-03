@@ -1,0 +1,49 @@
+# created by virtualenv automatically
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+# Virtual environment
+venv/
+ENV/
+env/
+
+# Django specific
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Media and static files
+/media/
+/staticfiles/
+
+# Migrations (optional: only if you don't want to track them in Git)
+# migrations/
+Apps/*/migrations/[0-9]*_*.py
+Apps/*/migrations/[0-9]*_*.pyc
+
+/app_asistencia/settings.py
+# Environment variables
+.env
+*.env
+
+# IDE and editor specific
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Testing / Coverage
+htmlcov/
+.tox/
+.nox/
+.coverage
+*.cover
+coverage.xml
+pytest_cache/
+
+# Deployment files (optional)
+*.pid
+*.tar.gz
+*.zip

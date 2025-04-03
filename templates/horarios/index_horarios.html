@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+    <h5>Horarios</h5>
+
+    <div class="card card-body">
+        <table id="empleadosTable" class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>Id Departamento</th>
+                    <th>Nombre</th>
+                    <th>Horarios</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for d in departamentos %}
+                    <tr>
+                        <td>{{d.id}}</td>
+                        <td>{{d.nombre}}</td>
+                        <td>
+                            <button class="btn btn-primary btn-sm" onclick="AgregarHorario('{{d.id}}')">add</button>
+                            {% for h in horarios %}
+                                {% if h.departamento_id == d.id %}
+                                    <p>{{h.hora_inicio}}-{{h.hora_fin}}
+                                        <button class="btn btn-danger btn-sm" onclick="EliminarHorario('{{h.id}}')" >x</button>
+                                        <button class="btn btn-warning btn-sm" onclick="EditarHorario('{{h.id}}')" >/</button>
+                                    </p>
+                                    
+                                    <br>
+                                {% endif %}
+                            {% endfor %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal Nuevo Horario -->
+    <div class="modal fade" id="modalHorario" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nuevo Horario</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'app_store_horarios' %}" class="container mt-4">
+                        {% csrf_token %}
+                        <input type='text' id='departamento_id' name='departamento_id' readonly hidden>
+                        <div class="mb-3">
+                            <label for="horario_inicio" class="form-label">Hora Inicio:</label>
+                            <input type="text" id="hora_inicio" name="hora_inicio" class="form-control"
+                            pattern="^([01]\d|2[0-3]):[0-5]\d:[0-5]\d$"
+                            placeholder="08:00:00" required>
+                            <div class="form-text">Formato: HH:MM:SS (24 horas)</div>
+
+                        </div>
+                        <div class="mb-3">
+                            <label for="horario" class="form-label">Hora Fin:</label>
+                           <input type="text" id="hora_fin" name="hora_fin" class="form-control"
+                            pattern="^([01]\d|2[0-3]):[0-5]\d:[0-5]\d$"
+                            placeholder="08:00:00" required>
+                            <div class="form-text">Formato: HH:MM:SS (24 horas)</div>
+
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Guardar Horario</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- Modal Editar Horario -->
+    <div class="modal fade" id="modalEditarHorario" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar Horario</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'app_update_horarios' %}" class="container mt-4">
+                        {% csrf_token %}
+                        <input type='text' id='edit_horario_id' name='edit_horario_id' readonly hidden>
+                        <div class="mb-3">
+                            <label for="edit_hora_inicio" class="form-label">Hora Inicio:</label>
+                            <input type="text" id="edit_hora_inicio" name="edit_hora_inicio" class="form-control"
+                            pattern="^([01]\d|2[0-3]):[0-5]\d:[0-5]\d$"
+                            placeholder="08:00:00" required>
+                            <div class="form-text">Formato: HH:MM:SS (24 horas)</div>
+
+                        </div>
+                        <div class="mb-3">
+                            <label for="horario" class="form-label">Hora Fin:</label>
+                           <input type="text" id="edit_hora_fin" name="edit_hora_fin" class="form-control"
+                            pattern="^([01]\d|2[0-3]):[0-5]\d:[0-5]\d$"
+                            placeholder="08:00:00" required>
+                            <div class="form-text">Formato: HH:MM:SS (24 horas)</div>
+
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Guardar Horario</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Mondal Eliminar Horario -->
+        <div class="modal fade" id="modalEliminarHorario" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Eliminar Horario</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+
+                        <form method="post" action="{% url 'app_delete_horarios' %}" class="container mt-4">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <input type="text" id="horario_id" name="horario_id" class="form-control" required hidden>
+                                <h5>Está Seguro que desea eliminar el horario</h5>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                            </div>                        
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+{% endblock content %}
+
+{% block extra_js %}
+    <script>
+
+        
+        function EliminarHorario(id){
+            $("#horario_id").val(id);
+            $("#modalEliminarHorario").modal("show");
+        }
+        function AgregarHorario(id){
+            $("#departamento_id").val(id);
+            $("#modalHorario").modal("show");
+        }
+ 
+        function EditarHorario(id) { 
+            
+            $.ajax({
+                type: "GET",
+                url: "/horarios/edit/"+id,
+                dataType: "json",
+                success: function (data) {
+                    $("#edit_horario_id").val(data.id)
+                    $("#edit_hora_inicio").val(data.hora_inicio)
+                    $("#edit_hora_fin").val(data.hora_fin)
+                    $("#modalEditarHorario").modal("show");
+                }
+            });
+         };
+
+    </script>
+{% endblock extra_js %}

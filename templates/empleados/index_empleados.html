@@ -1,0 +1,204 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+    <div class="col-md4">
+        <button class="btn btn-primary btn-sm" id="btnNuevoEmpleado">Nuevo</button>
+    </div>
+
+    <div class="card card-body">
+        <table id="empleadosTable" class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>Id del Empleado</th>
+                    <th>Código</th>
+                    <th>Nombres</th>
+                    <th>Nombre de empresa</th>
+                    <th>Departamento</th>
+                    <th>Horario</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for e in empleados %}
+                    <tr>
+                        <td>{{e.id}}</td>
+                        <td>{{e.codigo}}</td>
+                        <td>{{e.nombres}}</td>
+                        <td>{{e.empresa}}</td>
+                        <td>{{e.departamento}}</td>
+                        <td>{{e.horario}}</td>
+                        <td>
+                            <button class="btn btn-warning btn-sm btnEditarEmpleado">Editar</button>
+                            
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal Nuevo Empleado -->
+    <div class="modal fade" id="modalEmpleado" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nuevo Empleado</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'agregar_empleado' %}" class="container mt-4">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label for="codigo" class="form-label">Código:</label>
+                            <input type="text" id="codigo" name="codigo" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="nombres" class="form-label">Nombres:</label>
+                            <input type="text" id="nombres" name="nombres" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="empresa" class="form-label">Empresa:</label>
+                            <select id="empresa" name="empresa" class="form-select" required>
+                                <option value="GRUPO VILUSSA SAC">GRUPO VILUSSA SAC</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="departamento" class="form-label">Departamento:</label>
+                            <select id="departamento" name="departamento" class="form-select" required>
+                                <option value="VILUSSA">VILUSSA</option>
+                                <option value="HACIENDA">HACIENDA</option>
+                                <option value="ATENAS">ATENAS</option>
+                                <option value="OTORONGO">OTORONGO</option>
+                                <option value="DONATTO">DONATTO</option>
+                                <option value="NANAY">NANAY</option>
+                                <option value="TVA">TVA</option>
+                                <option value="COLINAS">COLINAS</option>
+                                <option value="MARKET1">MARKET1</option>
+                                <option value="MARKET2">MARKET2</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="horario" class="form-label">Horario:</label>
+                            <input type="text" id="horario" name="horario" class="form-control"
+                                pattern="^([01]\d|2[0-3]):[0-5]\d - ([01]\d|2[0-3]):[0-5]\d$"
+                                placeholder="08:00 - 17:00" required>
+                            <div class="form-text">Formato: HH:MM - HH:MM (24 horas)</div>
+                        </div>
+
+                        
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                        </div>
+                    
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mondal Editar Empleado -->
+        <div class="modal fade" id="modalEditarEmpleado" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Editar Empleado</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+
+                        <form method="post" action="{% url 'actualizar_empleado' %}" class="container mt-4">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="codigo" class="form-label">Código:</label>
+                                <input type="text" id="codigo_editar" name="codigo_editar" class="form-control" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="nombres" class="form-label">Nombres:</label>
+                                <input type='text' id='empleado_id' name='empleado_id' value="" hidden readonly>
+                                <input type="text" id="nombres_editar" name="nombres_editar" class="form-control" value="" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="empresa" class="form-label">Empresa:</label>
+                                <select id="empresa_editar" name="empresa_editar" class="form-select" required>
+                                    <option value="GRUPO VILUSSA SAC">GRUPO VILUSSA SAC</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="departamento" class="form-label">Departamento:</label>
+                                 <select id="departamento_editar" name="departamento_editar" class="form-select" required>
+                                    <option value="VILUSSA">VILUSSA</option>
+                                    <option value="HACIENDA">HACIENDA</option>
+                                    <option value="ATENAS">ATENAS</option>
+                                    <option value="OTORONGO">OTORONGO</option>
+                                    <option value="DONATTO">DONATTO</option>
+                                    <option value="NANAY">NANAY</option>
+                                    <option value="TVA">TVA</option>
+                                    <option value="COLINAS">COLINAS</option>
+                                    <option value="MARKET1">MARKET1</option>
+                                    <option value="MARKET2">MARKET2</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="horario" class="form-label">Horario:</label>
+                                <input type="text" id="horario_editar" name="horario_editar" class="form-control"
+                                    pattern="^([01]\d|2[0-3]):[0-5]\d - ([01]\d|2[0-3]):[0-5]\d$"
+                                    placeholder="08:00 - 17:00" value="{{ empleado.horario }}" required>
+                                <div class="form-text">Formato: HH:MM - HH:MM (24 horas)</div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save changes</button>
+                            </div>                        
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+{% endblock content %}
+
+{% block extra_js %}
+    <script>
+        $("#btnNuevoEmpleado").on("click",function (e) { 
+            e.preventDefault();
+            $("#modalEmpleado").modal("show");
+        })
+
+    
+            
+        let table = $('#empleadosTable').DataTable(); // Inicializa DataTables
+
+        // Evento para cuando se haga clic en el botón Editar dentro de la tabla
+        $('#empleadosTable tbody').on('click', '.btnEditarEmpleado', function() {
+            let row = $(this).closest('tr');  // Encuentra la fila más cercana al botón clickeado
+            let data = table.row(row).data(); // Obtiene los datos de esa fila
+            
+            // Asegúrate de que `data` no sea undefined
+            if (data) {
+                
+                $("#empleado_id").val(data[0]);
+                $("#codigo_editar").val(data[1]);
+                $("#nombres_editar").val(data[2]);      // Ajusta los índices según el orden de tu tabla
+                $("#empresa_editar").val(data[3]);
+                $("#departamento_editar").val(data[4]);
+                $("#horario_editar").val(data[5]);
+
+                // Si usas un modal, ábrelo aquí
+                $("#modalEditarEmpleado").modal("show");
+            }
+        });
+            
+
+    </script>
+{% endblock extra_js %}

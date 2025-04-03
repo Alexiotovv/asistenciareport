@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+	<h5>Cargar archivo</h5>
+    <form method="POST" action="{% url 'app_procesar_subir_archivo' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="excelFile" class="form-label">Subir archivo Excel</label>
+            <input type="file" class="form-control" id="excelFile" name="excel_file" accept=".xls,.xlsx" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Subir archivo...</button>
+        <p>Total Registros <p>{{total_registros}}</p> </p>
+        <p>Total Marcaciones <p>{{total_marcaciones}}</p> </p>
+        <p>Total Guardados <p>{{total_guardados}}</p> </p>
+        <p>Total Duplicados <p>{{total_duplicados}}</p> </p>
+
+    </form>
+
+
+{% endblock content %}
+
+{% block extra_js %}
+	
+{% endblock extra_js %}
